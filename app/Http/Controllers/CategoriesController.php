@@ -9,6 +9,8 @@ use Illuminate\Http\Response;
 
 class CategoriesController extends Controller
 {
+    use ErrorHandler;
+
     /**
      * Display a listing of the resource.
      *
@@ -16,9 +18,14 @@ class CategoriesController extends Controller
      */
     public function index()
     {
-        $categories = Categories::all();
+        try {
+            $categories = Categories::all();
 
-        return \response(['categories' => $categories], Response::HTTP_OK);
+            return \response(['categories' => $categories], Response::HTTP_OK);
+        } catch (\PDOException $e) {
+            return $this->getError($e, Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
     }
 
     /**
@@ -52,9 +59,14 @@ class CategoriesController extends Controller
                 Response::HTTP_BAD_REQUEST
             );
         }
-        $category = Categories::create($data);
 
-        return response(['category' => $category], Response::HTTP_CREATED);
+        try {
+            $category = Categories::create($data);
+            return response(['category' => $category], Response::HTTP_CREATED);
+
+        } catch (\PDOException $e) {
+            return $this->getError($e, Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
@@ -99,8 +111,13 @@ class CategoriesController extends Controller
      */
     public function destroy(Categories $category)
     {
-        $category->delete();
+        try {
+            $category->delete();
+            return \response(['message' => "The category was deleted successfully"], Response::HTTP_OK);
 
-        return \response(['message' => "The category was deleted successfully"], Response::HTTP_OK);
+        } catch (\PDOException $e) {
+            return $this->getError($e, Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
     }
 }

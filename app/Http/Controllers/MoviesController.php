@@ -7,9 +7,11 @@ use App\Movies;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\DB;
 
 class MoviesController extends Controller
 {
+    use ErrorHandler;
     /**
      * Display a listing of the resource.
      *
@@ -17,8 +19,12 @@ class MoviesController extends Controller
      */
     public function index()
     {
-        $movies = Movies::all();
-        return response(['movies' => $movies], Response::HTTP_OK);
+        try {
+            $movies = Movies::all();
+            return response(['movies' => $movies], Response::HTTP_OK);
+        } catch(\PDOException $e) {
+            return $this->getError($e, Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
@@ -59,12 +65,16 @@ class MoviesController extends Controller
             );
         }
 
-        $category = Categories::select('id')->whereName($data['category'])->first();
-        $data['category'] = $category['id'];
+        try {
+            $category = Categories::select('id')->whereName($data['category'])->first();
+            $data['category'] = $category['id'];
 
-        $category = Movies::create($data);
+            $category = Movies::create($data);
 
-        return \response(['category' => $category], Response::HTTP_CREATED);
+            return \response(['category' => $category], Response::HTTP_CREATED);
+        } catch(\PDOException $e) {
+            return $this->getError($e, Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
@@ -135,19 +145,36 @@ class MoviesController extends Controller
      */
     public function destroy(Movies $movie)
     {
-        $movie->delete();
-        return \response(['The movie was deleted successfully'], Response::HTTP_OK);
+        try {
+            $movie->delete();
+            return \response(['The movie was deleted successfully'], Response::HTTP_OK);
+        } catch(\PDOException $e) {
+            return $this->getError($e, Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
     }
 
     public function getByCategory(Request $request, $categoryId) {
-        $movies = Movies::whereCategory($categoryId)->get();
+        try {
+            $movies = Movies::whereCategory($categoryId)->get();
 
-        return \response(['movies' => $movies], Response::HTTP_OK);
+            return \response(['movies' => $movies], Response::HTTP_OK);
+        } catch (\PDOException $e) {
+            return $this->getError($e, Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
     }
 
     public function getByActorName(Request $request, $actor) {
-        $movies = Movies::whereRaw("select * where $actor = ANY(actors)")->get();
+        try {
+            $movies =
+                DB::select(
+                    "select * from movies where '$actor' = ANY(select * from json_array_elements_text(actors))"
+                );
 
-        return[$movies];
+            return \response(['movies' => $movies], Response::HTTP_OK);
+        } catch (\PDOException $e) {
+            return $this->getError($e, Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 }
