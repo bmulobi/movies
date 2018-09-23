@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Categories;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class CategoriesController extends Controller
 {
@@ -14,7 +16,9 @@ class CategoriesController extends Controller
      */
     public function index()
     {
-        //
+        $categories = Categories::all();
+
+        return \response(['categories' => $categories], Response::HTTP_OK);
     }
 
     /**
@@ -35,7 +39,22 @@ class CategoriesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $data = $request->validate([
+                'name' => 'required|string|between:5,50|unique:categories,name',
+                'description' => 'required|string|between:5,200',
+            ]);
+        } catch(ValidationException $e) {
+            return response([
+                'message' => $e->getMessage(),
+                'error' => $e->errors()
+            ],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
+        $category = Categories::create($data);
+
+        return response(['category' => $category], Response::HTTP_CREATED);
     }
 
     /**
@@ -46,7 +65,7 @@ class CategoriesController extends Controller
      */
     public function show(Categories $categories)
     {
-        //
+
     }
 
     /**
@@ -78,8 +97,10 @@ class CategoriesController extends Controller
      * @param  \App\Categories  $categories
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Categories $categories)
+    public function destroy(Categories $category)
     {
-        //
+        $category->delete();
+
+        return \response(['message' => "The category was deleted successfully"], Response::HTTP_OK);
     }
 }

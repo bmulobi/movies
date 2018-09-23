@@ -7,10 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 class Categories extends Model
 {
     protected $name = 'categories';
+
     protected $fillable = [
         'name',
-        'description'
+        'description',
     ];
+
+    public function movies() {
+        return $this->hasMany(Movies::class);
+    }
 
 
 

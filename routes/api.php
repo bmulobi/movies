@@ -24,17 +24,19 @@ Route::middleware('guest')->group(function () {
 //});
 
 Route::middleware('auth:api')->group(function () {
-    Route::get('/categories', 'CategoryController@index');
+    Route::get('/categories', 'CategoriesController@index');
     Route::post('/category', 'CategoriesController@store');
-    Route::get('/category/{id}', 'CategoryController@show');
-    Route::put('/category/{id}', 'CategoryController@update');
-    Route::delete('/category/{id}', 'CategoryCOntroller@destroy');
+    Route::get('/category/{id}', 'CategoriesController@show');
+    Route::put('/category/{id}', 'CategoriesController@update');
+    Route::delete('/category/{category}', 'CategoriesCOntroller@destroy');
 });
 
 Route::middleware('auth:api')->group(function () {
     Route::get('/movies', 'MoviesController@index');
+    Route::get('movies/{categoryId}', 'MoviesController@getByCategory');
     Route::post('/movie', 'MoviesController@store');
-    Route::get('/movie/{id}', 'MoviesController@show');
-    Route::put('movie/{id}', 'MioviesController@update');
-    Route::delete('movie/{id}', 'MioviesController@destroy');
+    Route::get('/movie/{movie}', 'MoviesController@show');
+    Route::put('movie/{movie}', 'MoviesController@update');
+    Route::delete('movie/{movie}', 'MoviesController@destroy');
+    Route::get('/movies/actor/{actor}', 'MoviesController@getByActorName');
 });

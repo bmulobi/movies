@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Movies extends Model
 {
     protected $name = 'movies';
+
     protected $fillable = [
         'title',
         'description',
@@ -16,5 +17,9 @@ class Movies extends Model
         'popularity'
     ];
 
+    protected $casts = ['actors' => 'array'];
 
+    public function category() {
+        return $this->belongsTo(Categories::class);
+    }
 }
