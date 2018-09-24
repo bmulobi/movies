@@ -8,9 +8,11 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
 {
+    use \App\Http\Controllers\ErrorHandler;
     /*
     |--------------------------------------------------------------------------
     | Login Controller
@@ -43,16 +45,24 @@ class LoginController extends Controller
 
     // API login
     public function login(Request $request) {
-        $credentials = $this->validate($request, ['email' => 'required|email', 'password' => 'required|string']);
+        try {
+            $credentials = $this->validate($request, ['email' => 'required|email', 'password' => 'required|string']);
 
-        $user = User::whereEmail($credentials['email'])->first();
+            $user = User::whereEmail($credentials['email'])->first();
 
-        if (!is_null($user) && Hash::check($credentials['password'], $user->password)) {
-            $token = $user->createToken('access-token')->accessToken;
-            return \response([
-                'message' => "Login was successful",
-                'token' => $token
-            ], Response::HTTP_OK);
+            if (!is_null($user) && Hash::check($credentials['password'], $user->password)) {
+                $token = $user->createToken('access-token')->accessToken;
+                return \response([
+                    'message' => "Login was successful",
+                    'token' => $token
+                ], Response::HTTP_OK);
+            }
+        } catch (ValidationException $e) {
+            return $this->getError($e, Response::HTTP_BAD_REQUEST);
+        } catch (\PDOException $e) {
+            return $this->getError($e, Response::HTTP_INTERNAL_SERVER_ERROR);
+        } catch (\Exception $e) {
+            return $this->getError($e, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }
