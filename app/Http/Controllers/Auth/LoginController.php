@@ -3,7 +3,11 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
@@ -35,5 +39,20 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+    // API login
+    public function login(Request $request) {
+        $credentials = $this->validate($request, ['email' => 'required|email', 'password' => 'required|string']);
+
+        $user = User::whereEmail($credentials['email'])->first();
+
+        if (!is_null($user) && Hash::check($credentials['password'], $user->password)) {
+            $token = $user->createToken('access-token')->accessToken;
+            return \response([
+                'message' => "Login was successful",
+                'token' => $token
+            ], Response::HTTP_OK);
+        }
     }
 }
