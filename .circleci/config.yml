@@ -6,22 +6,21 @@ version: 2
 jobs:
   build:
     docker:
-    - image: ubuntu:16.04
-
     # specify the version you desire here
     - image: circleci/php:7.1-browsers
-
-    - image: postgres:10.5
 
     # Specify service dependencies here if necessary
     # CircleCI maintains a library of pre-built images
     # documented at https://circleci.com/docs/2.0/circleci-images/
     # - image: circleci/mysql:9.4
 
-    working_directory: ~/repo
+    working_directory: ~/movies
 
     steps:
     - checkout
+
+    - run: sudo apt update && sudo apt install zlib1g-dev libsqlite3-dev
+    - run: sudo docker-php-ext-install zip
 
     # Download and cache dependencies
     - restore_cache:
@@ -32,14 +31,15 @@ jobs:
 
     - run: composer install -n --prefer-dist
 
-    - run: |
-        sudo -u root createuser -h localhost --superuser ubuntu &&
-        sudo createdb -h localhost test_movies
-
     - save_cache:
         paths:
         - ./vendor
         key: v1-dependencies-{{ checksum "composer.json" }}
+
+    # prepare the database
+    - run: touch test_movies.sqlite
+    - run: php artisan migrate --env=testing --force
+    - run: php artisan passport:install --env=testing -v
 
     # run tests!
     - run: vendor/phpunit/phpunit/phpunit -vvv
