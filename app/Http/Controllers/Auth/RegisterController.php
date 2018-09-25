@@ -9,9 +9,11 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Response;
+use Illuminate\Validation\ValidationException;
 
 class RegisterController extends Controller
 {
+    use \App\Http\Controllers\ErrorHandler;
     /*
     |--------------------------------------------------------------------------
     | Register Controller
@@ -79,15 +81,21 @@ class RegisterController extends Controller
      * @return \Illuminate\Contracts\Routing\ResponseFactory|Response
      */
     public function apiRegistration(Request $request) {
-        $data = $this->validate($request, [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
-        ]);
+        try {
+            $data = $this->validate($request, [
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users',
+                'password' => 'required|string|min:6|confirmed',
+            ]);
 
-        $data['password'] = Hash::make($data['password']);
-        $user =  User::create($data);
+            $data['password'] = Hash::make($data['password']);
+            $user =  User::create($data);
 
-        return response(['user' => $user], Response::HTTP_CREATED);
+            return response(['user' => $user], Response::HTTP_CREATED);
+        } catch (ValidationException $e) {
+            return $this->getError($e, Response::HTTP_BAD_REQUEST);
+        } catch (\PDOException $e) {
+            return $this->getError($e, Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 }
