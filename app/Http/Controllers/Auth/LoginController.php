@@ -56,6 +56,8 @@ class LoginController extends Controller
                     'message' => "Login was successful",
                     'token' => $token
                 ], Response::HTTP_OK);
+            } else {
+                return \response(['error' => 'Wrong credentials'], Response::HTTP_UNAUTHORIZED);
             }
         } catch (ValidationException $e) {
             return $this->getError($e, Response::HTTP_BAD_REQUEST);

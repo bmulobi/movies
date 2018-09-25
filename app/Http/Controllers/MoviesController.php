@@ -69,9 +69,9 @@ class MoviesController extends Controller
             $category = Categories::select('id')->whereName($data['category'])->first();
             $data['category'] = $category['id'];
 
-            $category = Movies::create($data);
+            $movie = Movies::create($data);
 
-            return \response(['category' => $category], Response::HTTP_CREATED);
+            return \response(['movie' => $movie], Response::HTTP_CREATED);
         } catch(\PDOException $e) {
             return $this->getError($e, Response::HTTP_INTERNAL_SERVER_ERROR);
         }

@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Laravel\Passport\ClientRepository;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -44,6 +45,22 @@ abstract class TestCase extends BaseTestCase
     }
 
     protected function loginUser(array $data) {
+        $this->createUserWithPersonalAccessClient($data);
         return $this->post(getenv('APP_URL') . ':8000/api/login', $data);
+    }
+
+    // access client necessary because of passport authentication
+    protected function createUserWithPersonalAccessClient(array $data) {
+        $data['password'] = app('hash')->make('mypassword');
+        $user = $this->createUser($data);
+        $clientRepository = new ClientRepository();
+        $clientRepository->createPersonalAccessClient($user->id, 'test-client', getenv('APP_URL'));
+
+        return $user;
+    }
+
+    public function getToken($data) {
+        $response = $this->loginUser($data);
+        return $response->json('token');
     }
 }

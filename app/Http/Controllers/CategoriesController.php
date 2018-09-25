@@ -118,6 +118,5 @@ class CategoriesController extends Controller
         } catch (\PDOException $e) {
             return $this->getError($e, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
     }
 }
