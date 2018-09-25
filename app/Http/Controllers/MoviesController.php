@@ -172,7 +172,13 @@ class MoviesController extends Controller
                     "select * from movies where '$actor' = ANY(select * from json_array_elements_text(actors))"
                 );
 
-            return \response(['movies' => $movies], Response::HTTP_OK);
+            if ($movies) {
+                return \response(['movies' => $movies], Response::HTTP_OK);
+            } else {
+                return \response(['message' => "$actor was not found"], Response::HTTP_NOT_FOUND);
+            }
+
+
         } catch (\PDOException $e) {
             return $this->getError($e, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
