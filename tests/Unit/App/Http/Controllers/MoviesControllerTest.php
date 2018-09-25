@@ -22,13 +22,13 @@ class MoviesControllerTest extends TestCase
 
     public function testCanCreateMovie() {
         $this->post(
-            getenv('APP_URL') . ':8000/api/category',
+            getenv('APP_URL') . '/api/category',
             $this->category,
             $this->headers
         );
 
         $this->post(
-            getenv('APP_URL') . ':8000/api/movie',
+            getenv('APP_URL') . '/api/movie',
             array_merge($this->movie, ['category' => $this->category['name']]),
             $this->headers
         )->assertStatus(201);
@@ -52,7 +52,7 @@ class MoviesControllerTest extends TestCase
         ]);
 
         $response = $this->get(
-            getenv('APP_URL') . ':8000/api/movies',
+            getenv('APP_URL') . '/api/movies',
             $this->headers
         );
 
