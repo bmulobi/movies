@@ -9,6 +9,8 @@ jobs:
     # specify the version you desire here
     - image: circleci/php:7.1-browsers
 
+    - image: postgres:10.5
+
     # Specify service dependencies here if necessary
     # CircleCI maintains a library of pre-built images
     # documented at https://circleci.com/docs/2.0/circleci-images/
@@ -27,6 +29,10 @@ jobs:
         - v1-dependencies-
 
     - run: composer install -n --prefer-dist
+
+    - run: |
+        sudo -u root createuser -h localhost --superuser ubuntu &&
+        sudo createdb -h localhost test_movies
 
     - save_cache:
         paths:
