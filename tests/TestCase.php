@@ -72,13 +72,13 @@
 
         protected function registerUser(array $data)
         {
-            return $this->post(getenv('APP_URL') . ':8000/api/register', $data);
+            return $this->post(getenv('APP_URL') . '/api/register', $data);
         }
 
         protected function loginUser(array $data)
         {
             $this->createUserWithPersonalAccessClient($data);
-            return $this->post(getenv('APP_URL') . ':8000/api/login', $data);
+            return $this->post(getenv('APP_URL') . '/api/login', $data);
         }
 
         // access client necessary because of passport authentication
