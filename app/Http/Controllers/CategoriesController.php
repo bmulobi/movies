@@ -6,18 +6,32 @@ use App\Categories;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Repositories\Repository;
 
 class CategoriesController extends Controller
 {
     use ErrorHandler;
+
+    private $repository;
+    private $categories;
+
+    public function __construct(Categories $categories)
+    {
+        $this->repository = $categories;
+    }
 
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+
+        if ($request->is(route('categories'))) {
+            return view('categories', )
+        }
+
         try {
             $categories = Categories::all();
 

@@ -15,7 +15,7 @@ use Illuminate\Http\Request;
 
 Route::middleware('guest')->group(function () {
     Route::post('/register', 'Auth\RegisterController@apiRegistration');
-    Route::post('/login', 'Auth\LoginController@login');
+    Route::post('/login', 'Auth\LoginController@apiLogin');
 });
 
 
