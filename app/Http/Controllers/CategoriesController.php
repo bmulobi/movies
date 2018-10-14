@@ -29,7 +29,7 @@ class CategoriesController extends Controller
     {
 
         if ($request->is(route('categories'))) {
-            return view('categories', )
+           // return view('categories', )
         }
 
         try {
