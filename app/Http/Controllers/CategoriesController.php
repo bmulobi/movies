@@ -12,12 +12,11 @@ class CategoriesController extends Controller
 {
     use ErrorHandler;
 
-    private $repository;
     private $categories;
 
     public function __construct(Categories $categories)
     {
-        $this->repository = $categories;
+        $this->categories = new Repository($categories);
     }
 
     /**
@@ -27,9 +26,8 @@ class CategoriesController extends Controller
      */
     public function index(Request $request)
     {
-
-        if ($request->is(route('categories'))) {
-           // return view('categories', )
+        if ($request->path() === 'categories') {
+           return view('categories', ['categories' => $this->categories->all()]);
         }
 
         try {
@@ -66,6 +64,10 @@ class CategoriesController extends Controller
                 'description' => 'required|string|between:5,200',
             ]);
         } catch(ValidationException $e) {
+            if ($request->path() === 'category') {
+                return view('categories', ['categories' => $this->categories->all()])->with('errors', $e->errors());
+            }
+
             return response([
                 'message' => $e->getMessage(),
                 'error' => $e->errors()
@@ -76,6 +78,11 @@ class CategoriesController extends Controller
 
         try {
             $category = Categories::create($data);
+
+            if ($request->path() === 'category') {
+                return view('categories', ['categories' => $this->categories->all()])->with('status', 'category was created successfully');
+            }
+
             return response(['category' => $category], Response::HTTP_CREATED);
 
         } catch (\PDOException $e) {

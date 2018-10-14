@@ -20,7 +20,11 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::get('/categories', 'CategoriesController@index')->name('categories');
+Route::get('/categories', 'CategoriesController@index')->name('getCategories');
+Route::post('/category', 'CategoriesController@store')->name('storeCategory');
+Route::get('/category/{id}', 'CategoriesController@show')->name('getCategory');
+Route::put('/category/{id}', 'CategoriesController@update')->name('updateCategory');
+Route::delete('/category/{category}', 'CategoriesCOntroller@destroy')->name('deleteCategory');
 
 Route::get('/movies', function () {
     return view('movies');

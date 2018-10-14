@@ -10467,7 +10467,8 @@ a.text-dark:focus {
 }
 
 .navbar-laravel {
-  background-color: #fff;
+  background-color: #F97300;
+  color: white;
   -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
 }
@@ -10497,7 +10498,13 @@ a.text-dark:focus {
 }
 
 .categories {
-  background: green;
-  min-height: 10rem;
+  max-height: 20rem;
+  overflow-y: scroll;
+  background: #F97300;
+}
+
+.nav-main .nav-link:hover {
+  color: #F97300 !important;
+  background-color: white;
 }
 
