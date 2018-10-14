@@ -20,6 +20,19 @@
             </div>
         </div>
         <div class="row">
+            <div class="col-md-8 mx-auto">
+                @if (session('errors'))
+                    @foreach(session('errors') as $error)
+                        @foreach($error as $message)
+                            <div class="alert alert-danger" role="alert">
+                                {{ $message }}
+                            </div>
+                        @endforeach
+                    @endforeach
+                @endif
+            </div>>
+        </div>
+        <div class="row">
             <div class="col-md-8 mx-auto categories">
                 @foreach($categories as $category)
                     <div class="card">
@@ -42,11 +55,6 @@
             </div>
         </div>
     </div>
-
-
-
-    <!-- Button trigger modal -->
-
 
     <!-- new category Modal -->
     <div class="modal" id="addCategoryModal" tabindex="-1" role="dialog" aria-labelledby="addCategoryModal" aria-hidden="true">
@@ -79,10 +87,4 @@
             </div>
         </div>
     </div>
-    @if (session('status'))
-        <div class="alert alert-success" role="alert">
-            {{ session('status') }}
-        </div>
-    @endif
-
 @endsection

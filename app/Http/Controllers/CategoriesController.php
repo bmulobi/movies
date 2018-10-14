@@ -65,7 +65,9 @@ class CategoriesController extends Controller
             ]);
         } catch(ValidationException $e) {
             if ($request->path() === 'category') {
-                return view('categories', ['categories' => $this->categories->all()])->with('errors', $e->errors());
+                return back()
+                    ->with('categories', $this->categories->all())
+                    ->with('errors', $e->errors());
             }
 
             return response([
@@ -80,7 +82,10 @@ class CategoriesController extends Controller
             $category = Categories::create($data);
 
             if ($request->path() === 'category') {
-                return view('categories', ['categories' => $this->categories->all()])->with('status', 'category was created successfully');
+                return back()->with([
+                    'categories' => $this->categories->all(),
+                    'status' => 'category was created successfully'
+                ]);
             }
 
             return response(['category' => $category], Response::HTTP_CREATED);
