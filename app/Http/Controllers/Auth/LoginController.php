@@ -44,7 +44,7 @@ class LoginController extends Controller
     }
 
     // API login
-    public function login(Request $request) {
+    public function apiLogin(Request $request) {
         try {
             $credentials = $this->validate($request, ['email' => 'required|email', 'password' => 'required|string']);
 

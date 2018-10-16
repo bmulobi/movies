@@ -9,6 +9,43 @@
 @import '~bootstrap/scss/bootstrap';
 
 .navbar-laravel {
-  background-color: #fff;
+  background-color: #F97300;
+    color: white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+
+.description{
+    position: absolute;
+    top: 30%;
+    margin: auto;
+    padding: 2em;
+
+}
+.description h1{
+    color:#F97300 ;
+}
+.description p{
+    color:#666;
+    font-size: 20px;
+    width: 50%;
+    line-height: 1.5;
+}
+.description button{
+    border:1px  solid #F97300;
+    background:#F97300;
+    color:#fff;
+}
+
+.categories {
+    max-height: 20rem;
+    overflow-y: scroll;
+    background: #F97300;
+}
+
+.nav-main {
+    .nav-link:hover {
+        color: #F97300 !important;
+        background-color: white;
+    }
 }

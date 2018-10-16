@@ -6,18 +6,30 @@ use App\Categories;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Repositories\Repository;
 
 class CategoriesController extends Controller
 {
     use ErrorHandler;
+
+    private $categories;
+
+    public function __construct(Categories $categories)
+    {
+        $this->categories = new Repository($categories);
+    }
 
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        if ($request->path() === 'categories') {
+           return view('categories', ['categories' => $this->categories->all()]);
+        }
+
         try {
             $categories = Categories::all();
 
@@ -52,6 +64,12 @@ class CategoriesController extends Controller
                 'description' => 'required|string|between:5,200',
             ]);
         } catch(ValidationException $e) {
+            if ($request->path() === 'category') {
+                return back()
+                    ->with('categories', $this->categories->all())
+                    ->with('errors', $e->errors());
+            }
+
             return response([
                 'message' => $e->getMessage(),
                 'error' => $e->errors()
@@ -62,6 +80,14 @@ class CategoriesController extends Controller
 
         try {
             $category = Categories::create($data);
+
+            if ($request->path() === 'category') {
+                return back()->with([
+                    'categories' => $this->categories->all(),
+                    'status' => 'category was created successfully'
+                ]);
+            }
+
             return response(['category' => $category], Response::HTTP_CREATED);
 
         } catch (\PDOException $e) {

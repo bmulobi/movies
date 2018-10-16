@@ -36,6 +36,11 @@ jobs:
         - ./vendor
         key: v1-dependencies-{{ checksum "composer.json" }}
 
+    # prepare the database
+    - run: touch test_movies.sqlite
+    - run: php artisan migrate --env=testing --force
+    - run: php artisan passport:install --env=testing -v
+
     # run tests!
     # prepare the database
     - run: touch test_movies.sqlite
