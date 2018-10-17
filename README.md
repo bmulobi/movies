@@ -19,7 +19,7 @@
    | https://mulobi-movies.herokuapp.com/api/category/{category}| category_id | delete (private) |
    | https://mulobi-movies.herokuapp.com/api/movies| none | get (private) |
    | https://mulobi-movies.herokuapp.com/api/movies/{categoryId}| categoryId | get (private) |
-   | https://mulobi-movies.herokuapp.com/api/movie | title, description, actors (array), url (poster url jpg|png), popularity (int), category (category name) | post (private) |
+   | https://mulobi-movies.herokuapp.com/api/movie | title, description, actors (array), url (poster url jpg or png), popularity (int), category (category name) | post (private) |
    | https://mulobi-movies.herokuapp.com/api/movie/{movie}| movie (movie ID) | get (private) |
    | https://mulobi-movies.herokuapp.com/api/movie/{movie} | title, description, actors, url, popularity, category (at least one) | put (private) |
    | https://mulobi-movies.herokuapp.com/api/movie/{movie} | movie (the id) | delete (private) |
