@@ -124,9 +124,24 @@ class CategoriesController extends Controller
      * @param  \App\Categories  $categories
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Categories $categories)
+    public function update(Request $request, Categories $category)
     {
-        //
+        try {
+            $data = $request->validate(
+                [
+                    'name' => 'string|between:5,50|unique:categories,name',
+                    'description' => 'string|between:5,200',
+                ]);
+        } catch(ValidationException $e) {
+            return \response(
+                ["message" => "The given data is invalid", 'error' => $e->errors()],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        $category->update($data);
+
+        return \response(['category' => $category], Response::HTTP_OK);
     }
 
     /**
