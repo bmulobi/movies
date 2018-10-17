@@ -28,7 +28,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/category', 'CategoriesController@store');
     Route::get('/category/{id}', 'CategoriesController@show');
     Route::put('/category/{id}', 'CategoriesController@update');
-    Route::delete('/category/{category}', 'CategoriesCOntroller@destroy');
+    Route::delete('/category/{category}', 'CategoriesController@destroy');
 });
 
 Route::middleware('auth:api')->group(function () {
