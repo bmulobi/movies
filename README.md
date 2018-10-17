@@ -15,7 +15,7 @@
    | https://mulobi-movies.herokuapp.com/api/categories| none| get (private)|
    | https://mulobi-movies.herokuapp.com/api/category| name, description| post (private) |
    | https://mulobi-movies.herokuapp.com/api/category/{id} | id | get (private) |
-   | https://mulobi-movies.herokuapp.com/api/category/{id} | id | put (private) |
+   | https://mulobi-movies.herokuapp.com/api/category/{category} | name, description (at least one) | put (private) |
    | https://mulobi-movies.herokuapp.com/api/category/{category}| category_id | delete (private) |
    | https://mulobi-movies.herokuapp.com/api/movies| none | get (private) |
    | https://mulobi-movies.herokuapp.com/api/movies/{categoryId}| categoryId | get (private) |
